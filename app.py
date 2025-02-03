@@ -2,13 +2,22 @@ import pickle
 import streamlit as st
 import requests
 import pandas as pd
-import gdown
 import os
+import gdown
 
-# Check if file exists before downloading
-if not os.path.exists("similarity.pkl"):
-    url = "https://drive.google.com/file/d/1KGjEwNUzMSpt71knKSwVSIqLrpL2HCVX/view?usp=sharing"  # Replace with actual file ID
-    gdown.download(url, "similarity.pkl", quiet=False)
+# Google Drive file ID
+file_id = "1KGjEwNUzMSpt71knKSwVSIqLrpL2HCVX"
+file_url = f"https://drive.google.com/uc?id={file_id}"
+file_name = "similarity.pkl"
+
+# Check if file exists, if not, download it
+if not os.path.exists(file_name):
+    gdown.download(file_url, file_name, quiet=False)
+
+# Load the similarity matrix
+import pickle
+similarity = pickle.load(open(file_name, 'rb'))
+
 
 # Function to fetch movie poster
 def fetch_poster(movie_id):
@@ -51,7 +60,7 @@ def recommend(movie):
 # Load movie data
 movies_dict = pickle.load(open('movies_dict.pkl', 'rb'))
 movies = pd.DataFrame(movies_dict)
-similarity = pickle.load(open('similarity.pkl', 'rb'))
+# similarity = pickle.load(open('similarity.pkl', 'rb'))
 
 # Streamlit UI
 st.title("Movie Recommender System")
